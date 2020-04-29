@@ -40,9 +40,68 @@ class BogoSender(Sender):
             except socket.timeout:
                 pass
 
+############
+class ReliableSender(Sender):
 
+	def __init__(self, starting_packet_num = 0, timeout = 1)
+		'''
+		:param starting_packet_num: starting packet number for packet numbers
+		:param timeout: timeout of sender to trigger resend, may use later
+		'''
+		self.timeout = timeout
+		self.packet_num = starting_packet_num
+		self.simulator.sndr_socket.settimeout(timeout)
+
+	def send(self, data):
+		#Create DataGram object
+		datagram = DataGram(data, self.packet_num) 
+
+		# Turn it into a bytearray for sending through the channel
+		byte_datagram = bytearray([checksum, packet_num, data]) 
+
+		# Send the data and wait for a good ACK
+		while True: 
+			try
+				# Send 3 time
+				for i in range(0,3): 
+					self.simulator.u_send(byte_datagram)
+	
+				# Wait for ACK
+				ack = self.simulator.u_recieve()
+
+				if ack == packet_num: # correct ACK ->  break
+					break
+
+				else send(data) # wrong ACK -> resend
+				break
+			except socket.timeout
+				pass
+
+class DataGram(object):
+	def __init__(self, data, packetNum):
+		'''
+		:param data: data inside the packet
+		:param packetNUM: number of the packet being sent
+		'''
+		self.data = data
+		self.packet_num = packetNum
+		self.checksum = Checksum(data)
+
+	def Checksum(self, data):
+		'''
+		computes checksum of the array
+		:param data: data to compute checksum on
+		:return result: value of checksum
+		'''
+		result = 0
+		# Checksum computed by adding byte after byte and modulo 255 to keep it in one byte
+		for i in data:
+			result = result + i
+			result = result % 255
+		return result
+	
 if __name__ == "__main__":
     # test out BogoSender
     DATA = bytearray(sys.stdin.read())
-    sndr = BogoSender()
+    sndr = ReliableSender()
     sndr.send(DATA)
