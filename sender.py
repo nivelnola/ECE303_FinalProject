@@ -43,7 +43,7 @@ class BogoSender(Sender):
 ############
 class ReliableSender(Sender):
 
-	def __init__(self, starting_packet_num = 0, timeout = 1)
+	def __init__(self, starting_packet_num = 0, timeout = 1):
 		'''
 		:param starting_packet_num: starting packet number for packet numbers
 		:param timeout: timeout of sender to trigger resend, may use later
@@ -61,7 +61,7 @@ class ReliableSender(Sender):
 
 		# Send the data and wait for a good ACK
 		while True: 
-			try
+			try:
 				# Send 3 time
 				for i in range(0,3): 
 					self.simulator.u_send(byte_datagram)
@@ -72,9 +72,10 @@ class ReliableSender(Sender):
 				if ack == packet_num: # correct ACK ->  break
 					break
 
-				else send(data) # wrong ACK -> resend
+				else:
+					send(data) # wrong ACK -> resend
 				break
-			except socket.timeout
+			except socket.timeout:
 				pass
 
 class DataGram(object):
@@ -103,5 +104,5 @@ class DataGram(object):
 if __name__ == "__main__":
     # test out BogoSender
     DATA = bytearray(sys.stdin.read())
-    sndr = ReliableSender()
+    sndr = BogoSender()
     sndr.send(DATA)
