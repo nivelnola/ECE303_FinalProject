@@ -57,9 +57,10 @@ class ReliableSender(Sender):
 	def send(self, data):
 		#Create DataGram object
 		datagram = DataGram(data, self.packet_num) 
-
+		print("checksum="+str(datagram.checksum))
+		print("packetnum="+str(self.packet_num))
 		# Turn it into a bytearray for sending through the channel
-		byte_datagram = bytearray([checksum, packet_num, data]) 
+		byte_datagram = bytearray([datagram.checksum, self.packet_num, data]) 
 
 		# Send the data and wait for a good ACK
 		while True: 
@@ -71,7 +72,7 @@ class ReliableSender(Sender):
 				# Wait for ACK
 				ack = self.simulator.u_recieve()
 
-				if ack == packet_num: # correct ACK ->  break
+				if ack == bytes(self.packet_num): # correct ACK ->  break
 					break
 
 				else:
@@ -88,7 +89,7 @@ class DataGram(object):
 		'''
 		self.data = data
 		self.packet_num = packetNum
-		self.checksum = Checksum(data)
+		self.checksum = self.Checksum(data)
 
 	def Checksum(self, data):
 		'''

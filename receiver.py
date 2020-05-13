@@ -33,16 +33,15 @@ class BogoReceiver(Receiver):
 		self.logger.info("Receiving on port: {} and replying with ACK on port: {}".format(self.inbound_port, self.outbound_port))
 		while True:
 			try:
-				 data = self.simulator.u_receive()  # receive data
-				 self.logger.info("Got data from socket: {}".format(
-					 data.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
-			 sys.stdout.write(data)
-				 self.simulator.u_send(BogoReceiver.ACK_DATA)  # send ACK
+				data = self.simulator.u_receive()  # receive data
+				self.logger.info("Got data from socket: {}".format(data.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
+				sys.stdout.write(data)
+				self.simulator.u_send(BogoReceiver.ACK_DATA)  # send ACK
 			except socket.timeout:
 				sys.exit()
 
 class ReliableReceiver(Receiver):
-	ACK_DATA = bytes(123)#What should our ack be?
+	#ACK_DATA = bytes(123)#What should our ack be?
 	packet_counter = 0#This will get overwritten by starting_packet_num
 	def __init__(self, starting_packet_num = 0):
 		'''
@@ -59,7 +58,7 @@ class ReliableReceiver(Receiver):
 			rcvd_flag = 0
 			for i in range(3):
 				#Receives datagram
-				datagram = self.simulator.u_recieve()#This bytearray includes [checksum,pack_num,data]
+				datagram = self.simulator.u_receive()#This bytearray includes [checksum,pack_num,data]
 				
 				#Slices datagram into important sections
 				rcvr_checksum = datagram[0]
@@ -72,7 +71,7 @@ class ReliableReceiver(Receiver):
 					#The sent_flag insures we don't double coutn any packets
 					self.logger.info("Got data from socket: {}".format(data.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
 					sys.stdout.write(data)
-					self.simulator.u_send(ReliableReceiver.ACK_DATA)  # send ACK
+					self.simulator.u_send(bytes(packet_num))  # send ACK ->ReliableReceiver.ACK_DATA
 					rcvd_flag = 1
 					ReliableReceiver.packet_counter += 1
 					ReliableReceiver.packet_counter = ReliableReceiver.packet_counter % 256#Ensures that packet_counter loops
