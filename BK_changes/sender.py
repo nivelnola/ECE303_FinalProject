@@ -70,30 +70,34 @@ def make_frame(data):
 	array[2:1023] = data
 	return array
 
+
 class ReliableSender(Sender):
 	def __init__(self):
 		super(ReliableSender, self).__init__()
 
-
 	def send(self, data):
 		self.logger.info("Sending on port: {} and waiting for ACK on port: {}".format(self.outbound_port, self.inbound_port))
 		#print "Sending on port: {} and waiting for ACK on port: {}".format(self.outbound_port, self.inbound_port)
-
 		frame = make_frame(data)
-		#while True:
-	
-		try:
-			self.simulator.u_send(frame)  # send data
-			#print 'sent'
-			self.simulator.u_send(frame)
-			self.simulator.u_send(frame)
-			print "Sent frame, cheksum num = {}, number = {}\n".format(frame[0], frame[1])
-			self.logger.info("Send data: {} 3 times".format(frame[2:1023]))
-	        	ack = self.simulator.u_receive()  # receive ACK
-        		self.logger.info("Got ACK from socket: {}".format(
-				ack.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
-		except socket.timeout:
-			pass
+		self.send_frame(frame)
+
+
+	def send_frame(self, frame):
+		while True:
+			try:
+				self.simulator.u_send(frame)  # send data
+				#print 'sent'
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				print "Sent frame, cheksum num = {}, number = {}\n".format(frame[0], frame[1])
+				self.logger.info("Send data: {} 3 times".format(frame[2:1023]))
+		        	ack = self.simulator.u_receive()  # receive ACK
+        			self.logger.info("Got ACK from socket: {}".format(
+					ack.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
+				break
+			except socket.timeout:
+				pass
 
 
 

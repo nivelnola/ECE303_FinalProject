@@ -23,6 +23,18 @@ class Receiver(object):
     def receive(self):
         raise NotImplementedError("The base API class has no implementation. Please override and add your own.")
 
+def checksum(data):
+	'''
+	computes checksum of the array
+	:param data: data to compute checksum on
+	:return result: value of checksum
+	'''
+	result = 0
+	# Checksum computed by adding byte after byte and modulo 255 to keep it in one byte
+	for i in data:
+		result = result + i
+		result = result % 255
+	return result
 
 class BogoReceiver(Receiver):
     ACK_DATA = bytes(123)
@@ -37,7 +49,7 @@ class BogoReceiver(Receiver):
         while True:
             try:
         	data = self.simulator.u_receive()  # receive data
-		
+		self.logger.info("Received a packet")
 		if data[1] == previous_packet_num:
 			self.logger.info("Received duplicate packet num: {}".format(data[1]))
 			continue
@@ -49,11 +61,19 @@ class BogoReceiver(Receiver):
 		if previous_packet_num > 255:
 			previous_packet_num = 0
 
+
 		message = data[2:len(data)-1]
+		self.logger.info("packet checksum: {}".format(checksum(data[2:1023])))
+		if data[0] != checksum(message):
+			self.logger.info("Received corrupted packet num: {}".format(data[1]))
+			continue
+
         	self.logger.info("Got data from socket: {}".format(
         		message.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
 		sys.stdout.write(message)
+		BogoReceiver.ACK_DATA = bytes(data[1]) #sending the packet number back
 		self.simulator.u_send(BogoReceiver.ACK_DATA)  # send ACK
+		self.logger.info("acking\n")
             except socket.timeout:
                 sys.exit()
 
