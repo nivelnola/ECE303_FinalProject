@@ -1,0 +1,31 @@
+INFO:root:Receiving on port: 50005 and replying with ACK on port: 50006
+INFO:root:Received a packet, previous packet num: -1, this packet number: 0
+INFO:root:packet checksum: 87
+INFO:root:Got data from socket: this is a whole file it is filled with a lot of text. may characters can fit inside of it. I like foods like milk, but not with meat uiahdfuadhf afjaslfjaskl fsakfjsalkfjas jklasjfklasjfklas fkjjvhakjsfjkds fdsjahfjasfkljsadjfkld fjkasjfkl;dsajfkldsajf jkasdlf;jdsklafjasd ksdjfk;dsajfklds kjklsdafjklsdf this is a whole file it is filled with a lot of text. may characters can fit inside of it. I like foods like milk, but not with meat uiahdfuadhf afjaslfjaskl fsakfjsalkfjas jklasjfklasjfklas fkjjvhakjsfjkds fdsjahfjasfkljsadjfkld fjkasjfkl;dsajfkldsajf jkasdlf;jdsklafjasd ksdjfk;dsajfklds kjklsdafjklsdf this is a whole file it is filled with a lot of text. may characters can fit inside of it. I like foods like milk, but not with meat uiahdfuadhf afjaslfjaskl fsakfjsalkfjas jklasjfklasjfklas fkjjvhakjsfjkds fdsjahfjasfkljsadjfkld fjkasjfkl;dsajfkldsajf jkasdlf;jdsklafjasd ksdjfk;dsajfklds kjklsdafjklsdfthis is a whole file it is filled with a lot of text. may characters c with a lot of text. may charactersc
+
+INFO:root:acking
+
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0
+INFO:root:Received a packet, previous packet num: 0, this packet number: 0
+INFO:root:Received duplicate packet num: 0, ACKing: 0

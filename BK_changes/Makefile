@@ -1,4 +1,4 @@
-INPUT ?= ./file_1MB.txt
+INPUT ?= ./file_100bytes.txt
 OUTPUT ?= ./output.txt
 
 

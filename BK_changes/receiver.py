@@ -48,18 +48,15 @@ class BogoReceiver(Receiver):
 	next_packet_num = 0
         while True:
             try:
-        	data = self.simulator.u_receive()  # receive data
-		self.logger.info("Received a packet")
+		data = self.simulator.u_receive()  # receive data
+		BogoReceiver.ACK_DATA = bytes(data[1]) #sending the packet number back
+		self.logger.info("Received a packet, previous packet num: {}, this packet number: {}".format(previous_packet_num, data[1]))
 		if data[1] == previous_packet_num:
-			self.logger.info("Received duplicate packet num: {}".format(data[1]))
+			self.logger.info("Received duplicate packet num: {}, ACKing: {}".format(data[1], BogoReceiver.ACK_DATA))
+			self.simulator.u_send(BogoReceiver.ACK_DATA) 
 			continue
 
-		previous_packet_num = previous_packet_num + 1
-		next_packet_num = next_packet_num + 1
-		if next_packet_num > 255:
-			next_packet_num = 0
-		if previous_packet_num > 255:
-			previous_packet_num = 0
+
 
 
 		message = data[2:len(data)-1]
@@ -71,9 +68,16 @@ class BogoReceiver(Receiver):
         	self.logger.info("Got data from socket: {}".format(
         		message.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
 		sys.stdout.write(message)
-		BogoReceiver.ACK_DATA = bytes(data[1]) #sending the packet number back
+		
 		self.simulator.u_send(BogoReceiver.ACK_DATA)  # send ACK
 		self.logger.info("acking\n")
+
+		previous_packet_num = previous_packet_num + 1
+		next_packet_num = next_packet_num + 1
+		if next_packet_num > 255:
+			next_packet_num = 0
+		if previous_packet_num > 255:
+			previous_packet_num = 0
             except socket.timeout:
                 sys.exit()
 

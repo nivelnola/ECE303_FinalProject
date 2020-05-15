@@ -87,13 +87,14 @@ class ReliableSender(Sender):
 		'''
 		previous_packet_num = -1
 		next_packet_num = 0
-		for frameTicker in range(int(numpy.ceil(length / 1022.0))):
+		for frameTicker in range(0,int(numpy.ceil(length / 1022.0))):
 			print "numpy.ceil: " + str(int(numpy.ceil(length / 1022)))
 			currData = data[(1022*frameTicker):min(1022*(frameTicker+1)-1, length)]
 			frame = make_frame(currData, next_packet_num)
 			print "frame[0]  = " + str(frame[0])
 			print "frame[1] = "  + str(frame[1])
-			self.send_frame(frame)
+			self.send_frame(frame, next_packet_num)
+			print "received ack for sure"
 			previous_packet_num = previous_packet_num + 1
 			next_packet_num = next_packet_num + 1
 			if next_packet_num > 255:
@@ -114,19 +115,32 @@ class ReliableSender(Sender):
 			self.send_frame(frame)
 		'''
 
-	def send_frame(self, frame):
+	def send_frame(self, frame, num):
 		while True:
 			try:
 				self.simulator.u_send(frame)  # send data
-				#print 'sent'
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
+				self.simulator.u_send(frame)
 				self.simulator.u_send(frame)
 				self.simulator.u_send(frame)
 				self.simulator.u_send(frame)
 				print "Sent frame, cheksum num = {}, number = {}\n".format(frame[0], frame[1])
 				self.logger.info("Send data: {} 3 times".format(frame[2:1023]))
 		        	ack = self.simulator.u_receive()  # receive ACK
-        			self.logger.info("Got ACK from socket: {}".format(
-					ack.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
+				#if ack[0] != num:
+				#	self.logger.info("Got wrong ACK from socket: {}, num: {}".format(ack[0], num))  
+				#	continue
+						
+        			#self.logger.info("Got right ACK from socket: {}".format(
+				#	ack.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
+				
 				break
 			except socket.timeout:
 				pass
