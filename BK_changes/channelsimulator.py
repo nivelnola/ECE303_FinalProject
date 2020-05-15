@@ -59,8 +59,7 @@ class ChannelSimulator(object):
         self.sndr_socket = None
         self.rcvr_socket = None
         self.swap_queue = deque([random_bytes(ChannelSimulator.BUFFER_SIZE), random_bytes(ChannelSimulator.BUFFER_SIZE)])
-        #self.debug = debug_level == logging.DEBUG
-	self.debug = 1
+        self.debug = debug_level == logging.DEBUG
         if self.debug:
             self.logger = utils.Logger(self.__class__.__name__, debug_level)
         else:
@@ -141,7 +140,8 @@ class ChannelSimulator(object):
                 logging.debug("Frame before random errors: {}".format(data_bytes))
             for n in xrange(len(data_bytes)):
                 # XOR a random corrupter byte to change a single bit, none of the bits, or all the bits
-                corrupted[n] = corrupted[n] ^ choice(ChannelSimulator.CORRUPTERS)
+                #corrupted[n] = corrupted[n] ^ choice(ChannelSimulator.CORRUPTERS)
+		break
             if self.debug:
                 logging.debug("Frame after random errors: {}".format(corrupted))
         if p_swap < swap_error_prob:

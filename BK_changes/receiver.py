@@ -10,7 +10,7 @@ from sender import checksum
 
 class Receiver(object):
 
-    def __init__(self, inbound_port=50005, outbound_port=50006, timeout=10, debug_level=logging.INFO):
+    def __init__(self, inbound_port=50005, outbound_port=50006, timeout=3, debug_level=logging.INFO):
         self.logger = utils.Logger(self.__class__.__name__, debug_level)
 
         self.inbound_port = inbound_port
@@ -37,7 +37,9 @@ def checksum(data):
 	return result
 
 class BogoReceiver(Receiver):
-    ACK_DATA = bytes(123)
+    ACK_DATA = bytes(1)
+    
+    
 
     def __init__(self):
         super(BogoReceiver, self).__init__()
@@ -51,23 +53,20 @@ class BogoReceiver(Receiver):
 		data = self.simulator.u_receive()  # receive data
 		BogoReceiver.ACK_DATA = bytes(data[1]) #sending the packet number back
 		self.logger.info("Received a packet, previous packet num: {}, this packet number: {}".format(previous_packet_num, data[1]))
-		if data[1] == previous_packet_num:
-			self.logger.info("Received duplicate packet num: {}, ACKing: {}".format(data[1], BogoReceiver.ACK_DATA))
-			self.simulator.u_send(BogoReceiver.ACK_DATA) 
+		if data[1] != next_packet_num:
+			self.logger.info("Received wrong packet num: {}, ACKing: {}".format(data[1], previous_packet_num))
+			self.simulator.u_send(bytes(previous_packet_num)) 
 			continue
-
-
-
-
-		message = data[2:len(data)-1]
-		#self.logger.info("packet checksum: {}".format(checksum(data[2:1023])))
+		
+		message = data[2:1025]
+		self.logger.info("len(message) = {} | len(data) = {}".format(len(message),len(data)))
+		self.logger.info("Message : {}".format(message.decode('ascii')))	
 		if data[0] != checksum(message):
 			self.logger.info("Received corrupted packet num: {}".format(data[1]))
+			self.simulator.u_send(bytes(previous_packet_num))
 			continue
 
-        	self.logger.info("Got data from socket: {}".format(
-        		message.decode('ascii')))  # note that ASCII will only decode bytes in the range 0-127
-		sys.stdout.write(message)
+		sys.stdout.write(message.decode('ascii'))
 		
 		self.simulator.u_send(BogoReceiver.ACK_DATA)  # send ACK
 		self.logger.info("acking\n")
@@ -79,7 +78,8 @@ class BogoReceiver(Receiver):
 		if previous_packet_num > 255:
 			previous_packet_num = 0
             except socket.timeout:
-                sys.exit()
+		self.logger.info("Timeout***")
+                continue
 
 if __name__ == "__main__":
     # test out BogoReceiver
