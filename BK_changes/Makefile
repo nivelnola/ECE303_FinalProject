@@ -1,4 +1,4 @@
-INPUT ?= ./file_100bytes.txt
+INPUT ?= ./file_1MB.txt
 OUTPUT ?= ./output.txt
 
 
@@ -9,4 +9,4 @@ diff:
 kill:
 	pkill python2
 clean:
-	rm *.log $(OUTPUT) *.pyc *.swp
+	rm *.log $(OUTPUT) *.pyc *.swp 

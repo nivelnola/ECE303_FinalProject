@@ -2,7 +2,7 @@
 
 import logging
 import socket
-
+import numpy
 import channelsimulator
 import utils
 import sys
@@ -55,18 +55,11 @@ def checksum(data):
 	return result
 
 
-def make_frame(data):
-	previous_packet_num = -1
-	next_packet_num = 0
+def make_frame(data, num):
 	array = bytearray(1024)
 	array[0] = checksum(data)
-	array[1] = next_packet_num
-	previous_packet_num = previous_packet_num + 1
-	next_packet_num = next_packet_num + 1
-	if next_packet_num > 255:
-		next_packet_num = 0
-	if previous_packet_num > 255:
-		previous_packet_num = 0
+	array[1] = num
+
 	array[2:1023] = data
 	return array
 
@@ -78,9 +71,48 @@ class ReliableSender(Sender):
 	def send(self, data):
 		self.logger.info("Sending on port: {} and waiting for ACK on port: {}".format(self.outbound_port, self.inbound_port))
 		#print "Sending on port: {} and waiting for ACK on port: {}".format(self.outbound_port, self.inbound_port)
-		frame = make_frame(data)
-		self.send_frame(frame)
+		#frame = make_frame(data)
 
+		length = len(data)
+		#print length
+		ticker = 0
+		string = ''
+		'''
+		for i in range(0,1022):
+			if ticker <length:
+				string = string + str(data[ticker])
+				ticker = ticker + 1
+			frame = make_frame(string)
+			self.send_frame(frame)
+		'''
+		previous_packet_num = -1
+		next_packet_num = 0
+		for frameTicker in range(int(numpy.ceil(length / 1022.0))):
+			print "numpy.ceil: " + str(int(numpy.ceil(length / 1022)))
+			currData = data[(1022*frameTicker):min(1022*(frameTicker+1)-1, length)]
+			frame = make_frame(currData, next_packet_num)
+			print "frame[0]  = " + str(frame[0])
+			print "frame[1] = "  + str(frame[1])
+			self.send_frame(frame)
+			previous_packet_num = previous_packet_num + 1
+			next_packet_num = next_packet_num + 1
+			if next_packet_num > 255:
+				next_packet_num = 0
+			if previous_packet_num > 255:
+				previous_packet_num = 0			
+
+
+		'''
+
+		prev_cutoff = 0
+		for i in range(0, length):
+			if i >= 1022 + prev_cutoff
+				prev_cutoff = i
+				continue
+			string = string + data[i]
+			frame = make_frame(string)
+			self.send_frame(frame)
+		'''
 
 	def send_frame(self, frame):
 		while True:
