@@ -132,7 +132,7 @@ class ReliableSender(Sender):
 				self.simulator.u_send(frame)
 				self.simulator.u_send(frame)
 				print "Sent frame, cheksum num = {}, number = {}\n".format(frame[0], frame[1])
-				self.logger.info("Send data: {} 3 times".format(frame[2:1023]))
+				#self.logger.info("Send data: {} 3 times".format(frame[2:1023]))
 		        	ack = self.simulator.u_receive()  # receive ACK
 				#if ack[0] != num:
 				#	self.logger.info("Got wrong ACK from socket: {}, num: {}".format(ack[0], num))  

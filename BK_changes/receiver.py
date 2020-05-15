@@ -60,7 +60,7 @@ class BogoReceiver(Receiver):
 
 
 		message = data[2:len(data)-1]
-		self.logger.info("packet checksum: {}".format(checksum(data[2:1023])))
+		#self.logger.info("packet checksum: {}".format(checksum(data[2:1023])))
 		if data[0] != checksum(message):
 			self.logger.info("Received corrupted packet num: {}".format(data[1]))
 			continue
